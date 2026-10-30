@@ -1213,28 +1213,28 @@ def fetch_seller_details():
     return details
 
 
-FONT_STACK = "-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif"
+FONT_STACK = "-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Helvetica Neue,Arial,sans-serif"
 
 # Design tokens. Cards use div+border-radius+box-shadow, which degrade
 # gracefully to plain square boxes in older Outlook desktop (which ignores
 # those properties) but render as intended in Gmail, Apple Mail, and most
 # modern clients - a reasonable tradeoff for a personal digest email.
-COLOR_TEXT = "#1f2937"
-COLOR_MUTED = "#6b7280"
-COLOR_BORDER = "#e6e8eb"
-COLOR_GOLD = "#a86a08"
-COLOR_GOLD_TINT = "#fdf3e2"
-COLOR_SILVER = "#52606d"
-COLOR_SILVER_TINT = "#f1f2f4"
-COLOR_BLUE = "#2563a8"
-COLOR_BLUE_TINT = "#eaf1fb"
-COLOR_GREEN_ACCENT = "#1a8a4a"
-COLOR_GREEN_TINT = "#e9f8ef"
-COLOR_RED_ACCENT = "#c23434"
-COLOR_RED_TINT = "#fdecec"
-COLOR_UP = "#1a7a1a"
-COLOR_DOWN = "#b3261e"
-COLOR_FLAT = "#6b7280"
+COLOR_TEXT = "#1D2129"
+COLOR_MUTED = "#596170"
+COLOR_BORDER = "#E2E4E8"
+COLOR_GOLD = "#9A5B06"
+COLOR_GOLD_TINT = "#FCF2DF"
+COLOR_SILVER = "#596170"
+COLOR_SILVER_TINT = "#F1F2F4"
+COLOR_BLUE = "#3B5BDB"
+COLOR_BLUE_TINT = "#EDF0FC"
+COLOR_GREEN_ACCENT = "#1A7F4B"
+COLOR_GREEN_TINT = "#E5F3EB"
+COLOR_RED_ACCENT = "#C6362B"
+COLOR_RED_TINT = "#FBE9E7"
+COLOR_UP = "#1A7F4B"
+COLOR_DOWN = "#C6362B"
+COLOR_FLAT = "#6E7581"
 
 # Small original flat-icon illustrations (gold bar, gold ring, silver bar) -
 # hand-drawn SVG, rasterized to PNG, base64-encoded here so the email has zero
@@ -1574,8 +1574,8 @@ ICON_JEWELRY_B64 = (
 
 
 CARD_STYLE = (
-    f"background:#ffffff;border:1px solid {COLOR_BORDER};border-radius:14px;"
-    "padding:22px 24px;margin-bottom:18px;box-shadow:0 1px 3px rgba(15,23,42,0.06);"
+    f"background:#ffffff;border:1px solid {COLOR_BORDER};border-radius:8px;"
+    "padding:16px 18px;margin-bottom:12px;"
 )
 
 
@@ -1588,38 +1588,39 @@ def _card(icon, title, accent, body_html, open_by_default=True):
     clients that don't just render the content as a normal static block -
     nothing breaks or gets hidden unrecoverably either way.
     Defaults open so the email looks exactly as before until someone
-    taps a header to collapse it.
+    taps a header to collapse it. `icon` and `accent` are no longer drawn:
+    every section has the same plain dark title.
     """
     open_attr = " open" if open_by_default else ""
     return f"""
     <details{open_attr} class="dm-card email-card" style="{CARD_STYLE}">
-      <summary class="dm-text email-card-summary" style="margin:0;font-size:16.5px;font-weight:700;color:#111827;font-family:{FONT_STACK};cursor:pointer;list-style:none;">
-        <span style="font-size:19px;margin-right:6px;">{icon}</span>{escape(title)}<span class="email-chevron" style="float:right;color:{COLOR_MUTED};font-size:13px;">▾</span>
+      <summary class="dm-text email-card-summary" style="margin:0;font-size:15px;font-weight:600;color:{COLOR_TEXT};font-family:{FONT_STACK};cursor:pointer;list-style:none;">
+        {escape(title)}<span class="email-chevron" style="float:right;color:{COLOR_MUTED};font-size:13px;">▾</span>
       </summary>
-      <div style="height:3px;width:42px;background:{accent};border-radius:2px;margin:12px 0 16px;"></div>
+      <div style="height:12px;"></div>
       {body_html}
     </details>"""
 
 
 def _tr_bg(i):
-    return "#ffffff" if i % 2 == 0 else "#f8fafc"
+    return "#ffffff"  # rows are separated by borders, not zebra stripes
 
 
 def _table_open(headers, aligns, tint):
     ths = "".join(
-        f"<th style='padding:10px 14px;text-align:{a};font-size:12px;font-weight:700;"
-        f"color:#374151;text-transform:uppercase;letter-spacing:0.03em;'>{h}</th>"
+        f"<th style='padding:8px 12px;text-align:{a};font-size:12px;font-weight:600;"
+        f"color:{COLOR_MUTED};border-bottom:1px solid {COLOR_BORDER};'>{h}</th>"
         for h, a in zip(headers, aligns)
     )
     return (
         f"<table role=\"presentation\" cellpadding=\"0\" cellspacing=\"0\" "
         f"style=\"border-collapse:collapse;width:100%;font-family:{FONT_STACK};font-size:13.5px;\">"
-        f"<thead><tr style='background:{tint};'>{ths}</tr></thead><tbody>"
+        f"<thead><tr style='background:#F7F8FA;'>{ths}</tr></thead><tbody>"
     )
 
 
 _TABLE_CLOSE = "</tbody></table>"
-_TD = "padding:9px 14px;border-bottom:1px solid #f0f1f3;"
+_TD = "padding:8px 12px;border-bottom:1px solid #E2E4E8;"
 
 
 def _region_span(region):
@@ -1675,8 +1676,8 @@ def _row_icon_html(label, icon_kind, size=20):
 
 def _extremes_badge(kind):
     if kind == "cheapest":
-        return f"<span style='background:{COLOR_GREEN_TINT};color:{COLOR_GREEN_ACCENT};font-size:10.5px;font-weight:700;padding:2px 7px;border-radius:10px;margin-left:8px;white-space:nowrap;'>🏆 Rẻ nhất</span>"
-    return f"<span style='background:{COLOR_RED_TINT};color:{COLOR_RED_ACCENT};font-size:10.5px;font-weight:700;padding:2px 7px;border-radius:10px;margin-left:8px;white-space:nowrap;'>📈 Đắt nhất</span>"
+        return f"<span style='background:{COLOR_GREEN_TINT};color:{COLOR_GREEN_ACCENT};font-size:11px;font-weight:600;padding:1px 8px;border-radius:999px;margin-left:8px;white-space:nowrap;'>Rẻ nhất</span>"
+    return f"<span style='background:{COLOR_RED_TINT};color:{COLOR_RED_ACCENT};font-size:11px;font-weight:600;padding:1px 8px;border-radius:999px;margin-left:8px;white-space:nowrap;'>Đắt nhất</span>"
 
 
 def _price_spread_note(rows, sell_key="sell"):
@@ -1822,9 +1823,9 @@ def _changes_table_html(rows, show_source_today=False):
 def _stat_chip(label, value, sub="", accent=COLOR_GOLD):
     return f"""
         <td style="padding:6px;" width="33%">
-          <div style="background:#ffffff;border:1px solid {COLOR_BORDER};border-radius:12px;padding:14px 16px;">
-            <p style="margin:0;font-size:11px;font-weight:700;color:{COLOR_MUTED};text-transform:uppercase;letter-spacing:0.04em;">{escape(label)}</p>
-            <p style="margin:4px 0 0;font-size:19px;font-weight:700;color:{accent};">{value}</p>
+          <div style="background:#ffffff;border:1px solid {COLOR_BORDER};border-radius:6px;padding:12px 14px;">
+            <p style="margin:0;font-size:12px;color:{COLOR_MUTED};">{escape(label)}</p>
+            <p style="margin:2px 0 0;font-size:18px;font-weight:600;color:{accent};">{value}</p>
             {f"<p style='margin:2px 0 0;font-size:12px;color:{COLOR_MUTED};'>{sub}</p>" if sub else ""}
           </div>
         </td>"""
@@ -1861,7 +1862,7 @@ def _world_gold_html(world_gold, gap_rows):
             for i, r in enumerate(gap_rows)
         )
         parts.append(
-            f"<p style='font-size:12.5px;color:{COLOR_MUTED};margin:0 0 8px;font-weight:600;text-transform:uppercase;letter-spacing:0.03em;'>"
+            f"<p style='font-size:13px;color:{COLOR_MUTED};margin:0 0 8px;font-weight:600;'>"
             "Chênh lệch vàng miếng trong nước so với thế giới (quy đổi)</p>"
         )
         parts.append(_table_open(["Đơn vị", "Chênh lệch"], ["left", "right"], COLOR_GREEN_TINT) + gap_body + _TABLE_CLOSE)
@@ -1883,7 +1884,7 @@ def _spread_table_html(rows):
 def _big_moves_html(moves):
     if not moves:
         return (
-            f"<p style='color:{COLOR_MUTED};font-size:13px;margin:0;'>✅ Không có biến động nào vượt ngưỡng "
+            f"<p style='color:{COLOR_MUTED};font-size:13px;margin:0;'>Không có biến động nào vượt ngưỡng "
             f"{ALERT_THRESHOLD_PCT:.1f}% tính đến hiện tại.</p>"
         )
 
@@ -1927,7 +1928,7 @@ def _extremes_html(extremes):
     def _row(i, e):
         is_high = e["kind"] == "high"
         color = COLOR_UP if is_high else COLOR_DOWN
-        icon = "🔺" if is_high else "🔻"
+        icon = "&#9650;" if is_high else "&#9660;"
         label_vi = "Cao nhất" if is_high else "Thấp nhất"
         return (
             f"<tr style='background:{_tr_bg(i)}'>"
@@ -1987,13 +1988,12 @@ def _source_health_banner(health):
     all_ok = health["ok_count"] == health["total"]
     color = COLOR_GREEN_ACCENT if all_ok else COLOR_RED_ACCENT
     bg = COLOR_GREEN_TINT if all_ok else COLOR_RED_TINT
-    icon = "✅" if all_ok else "⚠️"
-    text = f"{icon} {health['ok_count']}/{health['total']} nguồn dữ liệu OK"
+    text = f"{health['ok_count']}/{health['total']} nguồn dữ liệu OK"
     if health["failures"]:
         text += " &middot; Lỗi: " + ", ".join(escape(f) for f in health["failures"])
     return (
-        f"<div style='background:{bg};border-radius:10px;padding:10px 16px;margin:0 0 18px;'>"
-        f"<p style='margin:0;font-size:12.5px;color:{color};font-weight:600;'>{text}</p>"
+        f"<div style='background:{bg};border-radius:6px;padding:8px 14px;margin:0 0 12px;'>"
+        f"<p style='margin:0;font-size:13px;color:{color};font-weight:500;'>{text}</p>"
         "</div>"
     )
 
@@ -2124,10 +2124,10 @@ def build_html(summary_tables, details, silver, silver_details, price_changes, w
     commentary_html = ""
     if commentary_text:
         commentary_html = f"""
-            <tr><td style="padding:0 6px 16px;">
-              <div class="dm-card" style="background:#fffaf0;border:1px solid #f0dfb8;border-radius:14px;padding:18px 20px;">
-                <p style="margin:0 0 8px;font-size:11px;font-weight:700;color:{COLOR_GOLD};text-transform:uppercase;letter-spacing:0.05em;">✨ Nhận định thị trường (AI)</p>
-                <p class="dm-text" style="margin:0;font-size:14.5px;line-height:1.6;color:{COLOR_TEXT};">{escape(commentary_text)}</p>
+            <tr><td style="padding:0 0 12px;">
+              <div class="dm-card" style="background:#ffffff;border:1px solid {COLOR_BORDER};border-radius:8px;padding:16px 18px;">
+                <p class="dm-text" style="margin:0 0 6px;font-size:15px;font-weight:600;color:{COLOR_TEXT};">Nhận định thị trường (AI)</p>
+                <p class="dm-text" style="margin:0;font-size:14px;line-height:1.6;color:{COLOR_TEXT};">{escape(commentary_text)}</p>
               </div>
             </td></tr>"""
 
@@ -2142,54 +2142,49 @@ def build_html(summary_tables, details, silver, silver_details, price_changes, w
       .email-chevron {{ transition:transform 0.15s ease; }}
       .email-card[open] .email-chevron {{ transform:rotate(180deg); }}
       @media (prefers-color-scheme: dark) {{
-        .dm-bg {{ background:#0f1115 !important; }}
-        .dm-card {{ background:#1a1d24 !important; border-color:#2a2e37 !important; }}
-        .dm-text {{ color:#f3f4f6 !important; }}
-        .dm-muted {{ color:#9aa1ab !important; }}
+        .dm-bg {{ background:#121316 !important; }}
+        .dm-card {{ background:#1B1D21 !important; border-color:#2F3238 !important; }}
+        .dm-text {{ color:#E8EAED !important; }}
+        .dm-muted {{ color:#A3A9B3 !important; }}
       }}
     </style>
   </head>
-  <body style="margin:0;padding:0;background:#eef1f5;font-family:{FONT_STACK};">
-    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" class="dm-bg" style="background:#eef1f5;">
+  <body style="margin:0;padding:0;background:#F4F5F7;font-family:{FONT_STACK};color:{COLOR_TEXT};">
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" class="dm-bg" style="background:#F4F5F7;">
       <tr>
         <td align="center" style="padding:24px 12px;">
           <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:760px;">
 
-            <!-- Header banner -->
+            <!-- Title and the headline numbers -->
             <tr>
-              <td style="background:linear-gradient(135deg,#8a5a0f,#b8860b);border-radius:16px 16px 0 0;padding:26px 28px;">
-                <p style="margin:0;font-size:22px;font-weight:800;color:#ffffff;">🪙 Giá vàng &amp; bạc hôm nay</p>
-                <p style="margin:6px 0 0;font-size:13px;color:#f5e7c8;">Các đơn vị lớn tại Việt Nam &middot; Cập nhật {escape(timestamp)}</p>
+              <td style="padding:0 2px 12px;">
+                <p class="dm-text" style="margin:0;font-size:20px;font-weight:600;line-height:1.3;color:{COLOR_TEXT};">Giá vàng &amp; bạc hôm nay</p>
+                <p class="dm-muted" style="margin:2px 0 0;font-size:13px;color:{COLOR_MUTED};">Các đơn vị lớn tại Việt Nam &middot; Cập nhật {escape(timestamp)}</p>
               </td>
             </tr>
-
-            <!-- Hero stat chips -->
             <tr>
-              <td class="dm-card" style="background:#ffffff;border-left:1px solid {COLOR_BORDER};border-right:1px solid {COLOR_BORDER};padding:14px 16px 4px;">
-                <table role="presentation" width="100%" cellpadding="0" cellspacing="0"><tr>{chips}</tr></table>
+              <td style="padding:0 0 12px;">
+                <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin:0 -6px;"><tr>{chips}</tr></table>
               </td>
             </tr>
-            <tr><td class="dm-card" style="background:#ffffff;border-left:1px solid {COLOR_BORDER};border-right:1px solid {COLOR_BORDER};border-bottom:1px solid {COLOR_BORDER};border-radius:0 0 16px 16px;padding:0 0 18px;"></td></tr>
-
-            <tr><td style="height:20px;"></td></tr>
 {commentary_html}
-            <tr><td style="padding:0 6px;">{health_banner}</td></tr>
+            <tr><td>{health_banner}</td></tr>
 
-            <tr><td>{_card("🥇", "Vàng - Tổng hợp so sánh giữa các đơn vị", COLOR_GOLD, summary_html)}</td></tr>
-            <tr><td>{_card("📋", "Vàng - Chi tiết đầy đủ theo từng đơn vị", COLOR_GOLD, detail_html)}</td></tr>
-            <tr><td>{_card("🥈", "Bạc - So sánh giữa các đơn vị", COLOR_SILVER, silver_html)}</td></tr>
-            <tr><td>{_card("📋", "Bạc - Chi tiết đầy đủ theo từng đơn vị", COLOR_SILVER, silver_detail_html)}</td></tr>
-            <tr><td>{_card("📊", "Biến động giá (7 ngày / 30 ngày / 1 năm)", COLOR_BLUE, changes_html)}</td></tr>
-            <tr><td>{_card("🔺", "Cực trị 30/90 ngày", COLOR_BLUE, extremes_html)}</td></tr>
-            <tr><td>{_card("🌍", "Giá vàng thế giới & chênh lệch trong nước/thế giới", COLOR_GREEN_ACCENT, world_html)}</td></tr>
-            <tr><td>{_card("↔️", "Chênh lệch mua-bán (spread)", COLOR_BLUE, spread_html)}</td></tr>
-            <tr><td>{_card("🚨", f"Cảnh báo biến động lớn (≥ {ALERT_THRESHOLD_PCT:.1f}%)", COLOR_RED_ACCENT, big_moves_html)}</td></tr>
-            <tr><td>{_card("💼", "Danh mục của bạn", COLOR_GOLD, holdings_html)}</td></tr>
-            <tr><td>{_card("📈", "Biểu đồ xu hướng giá", COLOR_TEXT, chart_html)}</td></tr>
+            <tr><td>{_card("", "Vàng - Tổng hợp so sánh giữa các đơn vị", COLOR_GOLD, summary_html)}</td></tr>
+            <tr><td>{_card("", "Vàng - Chi tiết đầy đủ theo từng đơn vị", COLOR_GOLD, detail_html)}</td></tr>
+            <tr><td>{_card("", "Bạc - So sánh giữa các đơn vị", COLOR_SILVER, silver_html)}</td></tr>
+            <tr><td>{_card("", "Bạc - Chi tiết đầy đủ theo từng đơn vị", COLOR_SILVER, silver_detail_html)}</td></tr>
+            <tr><td>{_card("", "Biến động giá (7 ngày / 30 ngày / 1 năm)", COLOR_BLUE, changes_html)}</td></tr>
+            <tr><td>{_card("", "Cực trị 30/90 ngày", COLOR_BLUE, extremes_html)}</td></tr>
+            <tr><td>{_card("", "Giá vàng thế giới & chênh lệch trong nước/thế giới", COLOR_GREEN_ACCENT, world_html)}</td></tr>
+            <tr><td>{_card("", "Chênh lệch mua-bán (spread)", COLOR_BLUE, spread_html)}</td></tr>
+            <tr><td>{_card("", f"Cảnh báo biến động lớn (≥ {ALERT_THRESHOLD_PCT:.1f}%)", COLOR_RED_ACCENT, big_moves_html)}</td></tr>
+            <tr><td>{_card("", "Danh mục của bạn", COLOR_GOLD, holdings_html)}</td></tr>
+            <tr><td>{_card("", "Biểu đồ xu hướng giá", COLOR_TEXT, chart_html)}</td></tr>
 
             <tr>
               <td style="padding:8px 6px 0;">
-                <p class="dm-muted" style="color:{COLOR_MUTED};font-size:11.5px;line-height:1.6;margin:0;">
+                <p class="dm-muted" style="color:{COLOR_MUTED};font-size:12px;line-height:1.6;margin:0;">
                   Nguồn: <a href="{escape(source_url)}" style="color:{COLOR_BLUE};">{escape(source_url)}</a> (vàng),
                   <a href="{escape(SILVER_URL)}" style="color:{COLOR_BLUE};">{escape(SILVER_URL)}</a> (bạc),
                   <a href="{escape(VCB_RATE_URL)}" style="color:{COLOR_BLUE};">{escape(VCB_RATE_URL)}</a> (tỷ giá) &middot;
@@ -2635,23 +2630,22 @@ def build_recap_html(stats, period_label_vi, period_days, timestamp):
 
     return f"""\
 <html>
-  <body style="margin:0;padding:0;background:#eef1f5;font-family:{FONT_STACK};">
-    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#eef1f5;">
+  <body style="margin:0;padding:0;background:#F4F5F7;font-family:{FONT_STACK};color:{COLOR_TEXT};">
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#F4F5F7;">
       <tr>
         <td align="center" style="padding:24px 12px;">
           <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:760px;">
             <tr>
-              <td style="background:linear-gradient(135deg,#2f3b52,#4a5b7a);border-radius:16px;padding:26px 28px;">
-                <p style="margin:0;font-size:22px;font-weight:800;color:#ffffff;">📅 Tổng kết giá {escape(period_label_vi)}</p>
-                <p style="margin:6px 0 0;font-size:13px;color:#dfe4ee;">{period_days} ngày qua &middot; Tính đến {escape(timestamp)}</p>
+              <td style="padding:0 2px 12px;">
+                <p style="margin:0;font-size:20px;font-weight:600;line-height:1.3;color:{COLOR_TEXT};">Tổng kết giá {escape(period_label_vi)}</p>
+                <p style="margin:2px 0 0;font-size:13px;color:{COLOR_MUTED};">{period_days} ngày qua &middot; Tính đến {escape(timestamp)}</p>
               </td>
             </tr>
-            <tr><td style="height:20px;"></td></tr>
-            <tr><td>{_card("🥇", "Vàng", COLOR_GOLD, gold_html)}</td></tr>
-            <tr><td>{_card("🥈", "Bạc", COLOR_SILVER, silver_html)}</td></tr>
+            <tr><td>{_card("", "Vàng", COLOR_GOLD, gold_html)}</td></tr>
+            <tr><td>{_card("", "Bạc", COLOR_SILVER, silver_html)}</td></tr>
             <tr>
               <td style="padding:8px 6px 0;">
-                <p style="color:{COLOR_MUTED};font-size:11.5px;line-height:1.6;margin:0;">
+                <p style="color:{COLOR_MUTED};font-size:12px;line-height:1.6;margin:0;">
                   Đính kèm: toàn bộ lịch sử giá đã ghi nhận (CSV) &middot;
                   Email tự động, chỉ mang tính tham khảo, không phải lời khuyên đầu tư.
                 </p>
